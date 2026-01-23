@@ -37,7 +37,7 @@ function WikiArchive()
 end
 
 function IsFileExists(file_name)
-  return vim.fn.filereadble(file_name) == 1
+  return vim.fn.filereadable(file_name) == 1
 end
 
 function UpdateArchiveIndex() 
