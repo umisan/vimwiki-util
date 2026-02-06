@@ -2,7 +2,7 @@ local ERROR = vim.log.levels.ERROR
 local INFO = vim.log.levels.INFO
 
 local function getCurrentLine()
-  return vim.fn.getLine(".")
+  return vim.fn.getline(".")
 end
 
 local function getCurrentLineNumber()
