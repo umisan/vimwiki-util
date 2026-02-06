@@ -38,12 +38,13 @@ local function updateArchiveIndex()
   end
   local file_list_map = {}
   for child, type in api.listDirectory(archive_root) do
-    if type == "direcory" then
+    if type == "directory" then
       file_list_map[child] = file_list_map[child] or {}
       table.insert(file_list_map[child], api.listDirectory(archive_root .. child))
     end
   end
   local wiki_list_map = core.filterWikiPage(file_list_map, archive_root)
+  print(#wiki_list_map)
   local sorted_keys = core.getSortedKeys(wiki_list_map)
   api.clearCurrentBuffer()
   for i, key in ipairs(sorted_keys) do

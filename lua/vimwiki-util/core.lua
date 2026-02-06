@@ -59,7 +59,6 @@ local function getSortedKeys(input)
     table.insert(keys, key) 
   end
   table.sort(keys)
-  print(#keys)
   return keys
 end
 
