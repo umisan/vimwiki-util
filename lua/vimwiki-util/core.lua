@@ -77,6 +77,7 @@ local function filterWikiPage(file_list_map, archive_root)
     for name, type in file_list do
       if type == "file" and string.match(name, "%.wiki$") then
         table.insert(wiki_list[sub_dir], "[[" .. archive_root .. "/" .. sub_dir .. "/" .. name .. "]]")
+      end
     end
   end
   return wiki_list
