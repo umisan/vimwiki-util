@@ -12,6 +12,7 @@ local function archiveLink()
     api.notifyError(err)
     return
   end
+  api.notify("debug")
   local currentLineNumber = api.getCurrentLineNumber()
   api.modifyCurrentBuffer(currentLineNumber - 1, currentLineNumber, {})
   api.notifyInfo(msg)
