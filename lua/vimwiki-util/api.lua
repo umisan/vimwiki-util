@@ -25,8 +25,12 @@ local function expand(path)
   return vim.fn.expand(path)
 end
 
+local function file_exists(path)
+  return vim.fn.filereadable(path) == 1
+end
+
 local function isDirectory(path)
-  return vim.fn.isdirectory(path) == 0
+  return vim.fn.isdirectory(path) == 1
 end
 
 local function listDirectory(path)

@@ -7,14 +7,28 @@ local homedir = os.getenv("HOME")
 local vimwiki_path = vim.g.vimwiki_list[1]["path"]
 
 local function archiveLink()
-  local msg, err = core.wikiArchive(homedir, vimwiki_path, config.archive_path, api.getCurrentLine())
+  local line = api.getCurrentLine()
+  local link_name, err = core.getLinkName(line)
+  if err then
+    api.notifyError(err)
+    return
+  end
+  local file_path = api.expand(core.get_link_file_path(vimwiki_path, link_name))
+  if not api.file_exists(file_path) then
+    api.notifyError("file not found: " .. file_path)
+  end
+  local archive_path = api.expand(core.get_archive_path(vimwiki_path, config.archive_path, link_name))
+  if api.file_exists(archive_path) then
+    api.notifyError("file already exists: " .. archive_path)
+  end
+  local msg, err = core.wikiArchive(file_path, archive_path)
   if err ~= nil then
     api.notifyError(err)
     return
   end
-  --local currentLineNumber = api.getCurrentLineNumber()
-  --api.modifyCurrentBuffer(currentLineNumber - 1, currentLineNumber, {})
-  --api.notifyInfo(msg)
+  local currentLineNumber = api.getCurrentLineNumber()
+  api.modifyCurrentBuffer(currentLineNumber - 1, currentLineNumber, {})
+  api.notifyInfo(msg)
 end
 
 local function updateArchiveIndex() 

@@ -8,31 +8,12 @@ local function getLinkName(line)
   return link_name, nil
 end
 
-local function expandPath(path, homedir)
-  if path:sub(1,1) ~= "~" then
-    return path, nil
-  end
-  if homedir == nil or homedir == "" then
-    return nil, "homedir should not be nil or empty"
-  end
-  if path == "~" then
-    return homedir, nil
-  end
-  if path:sub(1, 2) == "~/" then
-    return homedir .. path:sub(2), nil
-  end
-  return "", "unexpected path format"
+local function get_link_file_path(vimwiki_path, link_name)
+  return vimwiki_path .. "/" .. link_name .. ".wiki"
 end
 
-local function fileExists(path)
-  print(path)
-  local f, err = io.open(path, "r")
-  print(err)
-  if f then
-    f:close()
-    return true
-  end
-  return false
+local function get_archive_path(vimwiki_pat, archive_path, link_name)
+  return vimwiki_path .. "/" .. config.archive_path .. "/" .. link_name .. ".wiki"
 end
 
 --- wikiArchive try to archiving vimwiki link
@@ -42,26 +23,8 @@ end
 --- @param line string target line
 --- @return string|nil archive path
 --- @return string|nil err
-local function wikiArchive(homedir, vimwiki_path, archive_path, line)
-  local link_name, err = getLinkName(line)
-  if err then
-    return nil, err
-  end
-  local file_path = vimwiki_path .. "/" .. link_name .. ".wiki"
-  print(file_path)
-  local expanded_file_path, err = expandPath(file_path, homedir)
-  print(expanded_file_path)
-  if err ~= nil then
-    return nil, err
-  end
-  if not fileExists(expanded_file_path) then
-    return nil, "file not found: " .. expanded_file_path
-  end
-  local expanded_archive_path = expandPath(vimwiki_path .. "/" .. archive_path .. "/" .. link_name .. ".wiki")
-  if fileExists(expanded_archive_path) then
-    return nil, "file already exists: " .. expanded_archive_path
-  end
-  local success = os.rename(expanded_file_path, expanded_archive_path)
+local function wikiArchive(file_path, archive_path)
+  local success = os.rename(file_path, archive_path)
   if success then
     return "archived: " .. expanded_archive_path, nil
   else
@@ -100,6 +63,9 @@ local function getSortedKeys(input)
 end
 
 return {
+  getLinkName = getLinkName,
+  get_link_file_path = get_link_file_path,
+  get_archive_path = get_archive_path,
   wikiArchive = wikiArchive,
   filterWikiPage = filterWikiPage,
   getSortedKeys = getSortedKeys,
