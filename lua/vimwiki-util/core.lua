@@ -46,6 +46,7 @@ local function wikiArchive(homedir, vimwiki_path, archive_path, line)
     return nil, err
   end
   local file_path = vimwiki_path .. "/" .. link_name .. ".wiki"
+  print(file_path)
   local expanded_file_path, err = expandPath(file_path, homedir)
   if err ~= nil then
     return nil, err
