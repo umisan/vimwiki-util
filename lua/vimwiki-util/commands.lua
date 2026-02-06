@@ -10,6 +10,7 @@ local function archiveLink()
   local msg, err = core.wikiArchive(homedir, vimwiki_path, config.archive_path, api.getCurrentLine())
   if err ~= nil then
     api.notifyError(err)
+    return
   end
   local currentLineNumber = api.getCurrentLineNumber()
   api.modifyCurrentBuffer(currentLineNumber - 1, currentLineNumber, {})
