@@ -1,84 +1,98 @@
-function WikiArchive()
-  local line = vim.fn.getline(".")
-  local link_pattern = "%[%[([^%]|]*)%]%]"
-  local link_name = string.match(line, link_pattern)
+local LINK_PATTERN = "%[%[([^%]|]*)%]%]"
+
+local function getLinkName(line)
+  local link_name = string.match(line, LINK_PATTERN)
   if not link_name then
-    vim.notify("no vimwiki link", vim.log.levels.ERROR)
-    return
+    return nil, "no vimwiki link"
   end
+  return link_name, nil
+end
 
-  local vimwiki_path = vim.g.vimwiki_list[1]["path"]
+local function expandPath(path, homedir)
+  if path:sub(1,1) ~= "~" then
+    return path, nil
+  end
+  if homedir == nil or homedir == "" then
+    return nil, "homedir should not be nil or empty"
+  end
+  if path == "~" then
+    return homedir, nil
+  end
+  if path:sub(1, 2) ~= "~/" then
+    return homedir .. path:sub(2), nil
+  end
+  return "", "unexpected path format"
+end
+
+local function fileExists(path)
+  local f = io.open(path, "r")
+  if f then
+    f:close()
+    return true
+  end
+  return false
+end
+
+--- wikiArchive try to archiving vimwiki link
+--- @param homedir string user home directory
+--- @param vimwiki_path string path to vimiwiki
+--- @param archive_path string path to archiving vimwiki link
+--- @param line string target line
+--- @return string|nil archive path
+--- @return string|nil err
+local function wikiArchive(homedir, vimwiki_path, archive_path, line)
+  local link_name, err = getLinkName(line)
+  if err then
+    return nil, err
+  end
   local file_path = vimwiki_path .. "/" .. link_name .. ".wiki"
-  local expanded_file_path = vim.fn.expand(file_path)
-
-  if not IsFileExists(expanded_file_path) then
-    vim.notify("file not found: " .. expanded_file_path, vim.log.levels.ERROR)
-    return
+  local expanded_file_path = expandPath(file_path, homedir)
+  if not fileExists(expanded_file_path) then
+    return nil, "file not found: " .. expanded_file_path
   end
-
-  local year = string.format("%d", os.date("*t").year)
-  local archive_path = vimwiki_path .. "/" .. vim.g.archive_path .. "/" .. year .. "/" .. link_name .. ".wiki"
-  local expanded_archive_path = vim.fn.expand(archive_path)
-
-  if IsFileExists(expanded_archive_path) then
-    vim.notify("file already exists: " .. expanded_archive_path, vim.log.levels.ERROR)
-    return
+  local expanded_archive_path = expandPath(vimwiki_path .. "/" .. archive_path .. "/" .. link_name .. ".wiki")
+  if fileExists(expanded_archive_path) then
+    return nil, "file already exists: " .. expanded_archive_path
   end
-
   local success = os.rename(expanded_file_path, expanded_archive_path)
-
   if success then
-    vim.notify("archived: " .. archive_path, vim.log.levels.INFO)
-    local current_line = vim.fn.line(".")
-    vim.api.nvim_buf_set_lines(0, current_line - 1, current_line, false, {})
+    return "archived: " .. expanded_archive_path, nil
   else
-    vim.notify("failed to archive", vim.log.levels.ERROR)
+    return nil, "archive failed"
   end
 end
 
-function IsFileExists(file_name)
+local function isFileExists(file_name)
   return vim.fn.filereadable(file_name) == 1
 end
 
-function UpdateArchiveIndex() 
-  local vimwiki_path = vim.g.vimwiki_list[1]["path"]
-  local year = string.format("%d", os.date("*t").year)
-  local archive_dir = vimwiki_path .. "/" .. vim.g.archive_path .. "/" .. year .. "/"
-  local expanded_archive_path = vim.fn.expand(archive_dir)
-
-  if vim.fn.isdirectory(expanded_archive_path) == 0 then
-    vim.notify("directory not found: " .. archive_dir, vim.log.levels.ERROR)
-    return
-  end
-
+--- filterWikiPage list vimwiki file
+--- @param file_list_map table<string, table<string, string>[]>
+--- @param archive_root string root path of archive
+--- @return table<string, string[]> vimwiki file table
+local function filterWikiPage(file_list_map, archive_root)
   local wiki_list = {}
-  for name, type in vim.fs.dir(expanded_archive_path) do
-    if type == "file" and string.match(name, "%.wiki$") then
-      table.insert(wiki_list, "[[" .. "./" .. vim.g.archive_path .. "/" .. year .. "/" .. name .. "]]")
+  for sub_dir, file_list in pairs(file_list_map) do
+    wiki_list[sub_dir] = wiki_list[sub_dir] or {}
+    for name, type in file_list do
+      if type == "file" and string.match(name, "%.wiki$") then
+        table.insert(wiki_list[sub_dir], "[[" .. archive_root .. "/" .. sub_dir .. "/" .. name .. "]]")
     end
   end
-
-  local target_index = 0
-  local current_buffer = vim.api.nvim_get_current_buf()
-  local lines = vim.api.nvim_buf_get_lines(current_buffer, 0, -1, true)
-  for i = 0, #lines do
-    if lines[i] == "= 2025 =" then
-      target_index = i
-      break
-    end
-  end
-  local end_index = -1
-  lines = vim.api.nvim_buf_get_lines(current_buffer, target_index, -1, true)
-  for i = 0, #lines do
-    if lines[i] == "" then
-      end_index = target_index + i
-      break
-    end
-  end
-  vim.api.nvim_buf_set_lines(current_buffer, target_index, end_index, true, {})
-  vim.api.nvim_buf_set_lines(current_buffer, target_index, #wiki_list, false, wiki_list)
+  return wiki_list
 end
 
-vim.api.nvim_create_user_command("ArchiveLink", WikiArchive, {})
-vim.api.nvim_create_user_command("UpdateArchiveIndex", UpdateArchiveIndex, {})
-vim.g.archive_path = "archive"
+local function getSortedKeys(input) 
+  local keys = {}
+  for key in pairs(wiki_list_map) do 
+    table.insert(keys, key) 
+  end
+  table.sort(keys)
+  return keys
+end
+
+return {
+  wikiArchive = wikiArchive,
+  filterWikiPage = filterWikiPage,
+  getSortedKeys = getSortedKeys,
+}
