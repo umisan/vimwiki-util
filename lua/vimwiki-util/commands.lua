@@ -33,7 +33,7 @@ end
 
 local function updateArchiveIndex() 
   local archive_root = api.expand(vimwiki_path, config.archive_path)
-  print(archiev_root)
+  print(archive_root )
   if api.isDirectory(archive_root) == 0 then
     api.notifyError("directory not found: " .. archive_root)
   end
