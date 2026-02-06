@@ -44,13 +44,13 @@ end
 --- @param file_list_map table<string, table<string, string>[]>
 --- @param archive_root string root path of archive
 --- @return table<string, string[]> vimwiki file table
-local function filterWikiPage(file_list_map, archive_root)
+local function filterWikiPage(file_list_map, archive_path)
   local wiki_list = {}
   for sub_dir, file_list in pairs(file_list_map) do
     wiki_list[sub_dir] = wiki_list[sub_dir] or {}
     for i, entry in ipairs(file_list) do
       if entry.type == "file" and string.match(entry.name, "%.wiki$") then
-        table.insert(wiki_list[sub_dir], "[[" .. archive_root .. "/" .. sub_dir .. "/" .. entry.name .. "]]")
+        table.insert(wiki_list[sub_dir], "[[" .. archive_path .. "/" .. sub_dir .. "/" .. entry.name .. "]]")
       end
     end
   end
