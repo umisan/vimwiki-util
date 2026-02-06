@@ -18,7 +18,7 @@ local function expandPath(path, homedir)
   if path == "~" then
     return homedir, nil
   end
-  if path:sub(1, 2) ~= "~/" then
+  if path:sub(1, 2) == "~/" then
     return homedir .. path:sub(2), nil
   end
   return "", "unexpected path format"
