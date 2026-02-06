@@ -17,7 +17,7 @@ local function archiveLink()
   if not api.file_exists(file_path) then
     api.notifyError("file not found: " .. file_path)
   end
-  local archive_path = api.expand(core.get_archive_path(vimwiki_path, config.archive_path, link_name))
+  local archive_path = api.expand(core.get_archive_path(vimwiki_path, config.archive_path, year, link_name))
   if api.file_exists(archive_path) then
     api.notifyError("file already exists: " .. archive_path)
   end

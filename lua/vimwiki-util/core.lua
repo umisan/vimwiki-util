@@ -12,8 +12,8 @@ local function get_link_file_path(vimwiki_path, link_name)
   return vimwiki_path .. "/" .. link_name .. ".wiki"
 end
 
-local function get_archive_path(vimwiki_path, archive_path, link_name)
-  return vimwiki_path .. "/" .. archive_path .. "/" .. link_name .. ".wiki"
+local function get_archive_path(vimwiki_path, archive_path, year, link_name)
+  return vimwiki_path .. "/" .. archive_path .. "/" .. year .. "/" .. link_name .. ".wiki"
 end
 
 --- wikiArchive try to archiving vimwiki link
