@@ -55,7 +55,7 @@ end
 
 local function getSortedKeys(input) 
   local keys = {}
-  for key in pairs(wiki_list_map) do 
+  for key in pairs(input) do 
     table.insert(keys, key) 
   end
   table.sort(keys)
