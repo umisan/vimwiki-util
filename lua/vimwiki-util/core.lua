@@ -47,6 +47,8 @@ end
 local function filterWikiPage(file_list_map, archive_root)
   local wiki_list = {}
   for sub_dir, file_list in pairs(file_list_map) do
+    print(sub_dir)
+    print(#file_list)
     wiki_list[sub_dir] = wiki_list[sub_dir] or {}
     for name, type in pairs(file_list) do
       if type == "file" and string.match(name, "%.wiki$") then
