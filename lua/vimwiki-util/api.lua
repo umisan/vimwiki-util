@@ -52,6 +52,7 @@ return {
   appendToCurrentBuffer = appendToCurrentBuffer,
   clearCurrentBuffer = clearCurrentBuffer,
   expand = expand,
+  file_exists = file_exists,
   isDirectory = isDirectory,
   listDirectory = listDirectory,
   notifyError = notifyError,
