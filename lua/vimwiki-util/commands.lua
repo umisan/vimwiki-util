@@ -8,14 +8,13 @@ local vimwiki_path = vim.g.vimwiki_list[1]["path"]
 
 local function archiveLink()
   local msg, err = core.wikiArchive(homedir, vimwiki_path, config.archive_path, api.getCurrentLine())
-  api.notify("debug")
   if err ~= nil then
     api.notifyError(err)
     return
   end
-  local currentLineNumber = api.getCurrentLineNumber()
-  api.modifyCurrentBuffer(currentLineNumber - 1, currentLineNumber, {})
-  api.notifyInfo(msg)
+  --local currentLineNumber = api.getCurrentLineNumber()
+  --api.modifyCurrentBuffer(currentLineNumber - 1, currentLineNumber, {})
+  --api.notifyInfo(msg)
 end
 
 local function updateArchiveIndex() 
