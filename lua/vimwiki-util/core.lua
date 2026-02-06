@@ -46,7 +46,10 @@ local function wikiArchive(homedir, vimwiki_path, archive_path, line)
     return nil, err
   end
   local file_path = vimwiki_path .. "/" .. link_name .. ".wiki"
-  local expanded_file_path = expandPath(file_path, homedir)
+  local expanded_file_path, err = expandPath(file_path, homedir)
+  if err ~= nil then
+    return nil, err
+  end
   if not fileExists(expanded_file_path) then
     return nil, "file not found: " .. expanded_file_path
   end
