@@ -44,6 +44,7 @@ local function updateArchiveIndex()
     end
   end
   local wiki_list_map = core.filterWikiPage(file_list_map, archive_root)
+  print(wiki_list_map)
   local sorted_keys = core.getSortedKeys(wiki_list_map)
   api.clearCurrentBuffer()
   for i, key in ipairs(sorted_keys) do
