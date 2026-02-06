@@ -40,7 +40,9 @@ local function updateArchiveIndex()
   for child, type in api.listDirectory(archive_root) do
     if type == "directory" then
       file_list_map[child] = file_list_map[child] or {}
-      table.insert(file_list_map[child], api.listDirectory(archive_root .. child))
+      for grandchild, type in api.listDirectory(archive_root .. child) do
+        table.insert(file_list_map[child], {name = grandchild, type = type})
+      end
     end
   end
   local wiki_list_map = core.filterWikiPage(file_list_map, archive_root)
