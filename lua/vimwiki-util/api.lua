@@ -51,4 +51,5 @@ return {
   isDirectory = isDirectory,
   listDirectory = listDirectory,
   notifyError = notifyError,
+  notifyInfo = notifyInfo,
 }
