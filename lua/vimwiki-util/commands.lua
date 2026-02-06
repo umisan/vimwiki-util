@@ -6,11 +6,10 @@ local year = string.format("%d", os.date("*t").year)
 local homedir = os.getenv("HOME")
 local vimwiki_path = vim.g.vimwiki_list[1]["path"]
 
-
 local function archiveLink()
   local msg, err = core.wikiArchive(homedir, vimwiki_path, config.archive_path, api.getCurrentLine())
   if err ~= nil then
-    api.notifyError(msg)
+    api.notifyError(err)
   end
   local currentLineNumber = api.getCurrentLineNumber()
   api.modifyCurrentBuffer(currentLineNumber - 1, currentLineNumber, {})
