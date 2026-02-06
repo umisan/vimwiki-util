@@ -26,7 +26,7 @@ end
 local function wikiArchive(file_path, archive_path)
   local success = os.rename(file_path, archive_path)
   if success then
-    return "archived: " .. expanded_archive_path, nil
+    return "archived: " .. archive_path, nil
   else
     return nil, "archive failed"
   end
