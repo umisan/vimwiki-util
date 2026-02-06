@@ -25,7 +25,8 @@ local function expandPath(path, homedir)
 end
 
 local function fileExists(path)
-  local f = io.open(path, "r")
+  local f, err = io.open(path, "r")
+  print(err)
   if f then
     f:close()
     return true
