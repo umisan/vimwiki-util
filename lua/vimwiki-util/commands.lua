@@ -40,5 +40,7 @@ local function updateArchiveIndex()
   end
 end
 
-vim.api.nvim_create_user_command("ArchiveLink", archiveLink, {})
-vim.api.nvim_create_user_command("UpdateArchiveIndex", updateArchiveIndex, {})
+local function setup(opt)
+  vim.api.nvim_create_user_command("ArchiveLink", archiveLink, {})
+  vim.api.nvim_create_user_command("UpdateArchiveIndex", updateArchiveIndex, {})
+end
