@@ -12,6 +12,10 @@ local function get_link_file_path(vimwiki_path, link_name)
   return vimwiki_path .. "/" .. link_name .. ".wiki"
 end
 
+local function get_archive_root(vimwiki_path, archive_path)
+  return vimwiki_path .. "/" .. archive_path .. "/"
+end
+
 local function get_archive_path(vimwiki_path, archive_path, year, link_name)
   return vimwiki_path .. "/" .. archive_path .. "/" .. year .. "/" .. link_name .. ".wiki"
 end
@@ -65,6 +69,7 @@ end
 return {
   getLinkName = getLinkName,
   get_link_file_path = get_link_file_path,
+  get_archive_root = get_archive_root,
   get_archive_path = get_archive_path,
   wikiArchive = wikiArchive,
   filterWikiPage = filterWikiPage,

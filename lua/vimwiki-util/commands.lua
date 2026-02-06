@@ -32,8 +32,7 @@ local function archiveLink()
 end
 
 local function updateArchiveIndex() 
-  local archive_root = api.expand(vimwiki_path, config.archive_path)
-  print(archive_root )
+  local archive_root = api.expand(core.get_archive_root(vimwiki_path, config.archive_path))
   if api.isDirectory(archive_root) == 0 then
     api.notifyError("directory not found: " .. archive_root)
   end
