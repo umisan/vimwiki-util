@@ -3,7 +3,6 @@ local config = require("vimwiki-util.config")
 local api = require("vimwiki-util.api")
 
 local year = string.format("%d", os.date("*t").year)
-local homedir = os.getenv("HOME")
 local vimwiki_path = vim.g.vimwiki_list[1]["path"]
 
 local function archiveLink()
@@ -31,7 +30,7 @@ local function archiveLink()
   api.notifyInfo(msg)
 end
 
-local function updateArchiveIndex() 
+local function updateArchiveIndex()
   local archive_root = api.expand(core.get_archive_root(vimwiki_path, config.archive_path))
   if api.isDirectory(archive_root) == 0 then
     api.notifyError("directory not found: " .. archive_root)
@@ -48,7 +47,7 @@ local function updateArchiveIndex()
   local wiki_list_map = core.filterWikiPage(file_list_map, config.archive_path)
   local sorted_keys = core.getSortedKeys(wiki_list_map)
   api.clearCurrentBuffer()
-  for i, key in ipairs(sorted_keys) do
+  for _, key in ipairs(sorted_keys) do
     api.appendToCurrentBuffer({"= " .. key .. " ="})
     api.appendToCurrentBuffer({""})
     api.appendToCurrentBuffer(wiki_list_map[key])

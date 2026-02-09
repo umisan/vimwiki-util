@@ -21,10 +21,8 @@ local function get_archive_path(vimwiki_path, archive_path, year, link_name)
 end
 
 --- wikiArchive try to archiving vimwiki link
---- @param homedir string user home directory
---- @param vimwiki_path string path to vimiwiki
+--- @param file_path string path to vimiwiki
 --- @param archive_path string path to archiving vimwiki link
---- @param line string target line
 --- @return string|nil archive path
 --- @return string|nil err
 local function wikiArchive(file_path, archive_path)
@@ -36,19 +34,15 @@ local function wikiArchive(file_path, archive_path)
   end
 end
 
-local function isFileExists(file_name)
-  return vim.fn.filereadable(file_name) == 1
-end
-
 --- filterWikiPage list vimwiki file
 --- @param file_list_map table<string, table<string, string>[]>
---- @param archive_root string root path of archive
+--- @param archive_path string root path of archive
 --- @return table<string, string[]> vimwiki file table
 local function filterWikiPage(file_list_map, archive_path)
   local wiki_list = {}
   for sub_dir, file_list in pairs(file_list_map) do
     wiki_list[sub_dir] = wiki_list[sub_dir] or {}
-    for i, entry in ipairs(file_list) do
+    for _, entry in ipairs(file_list) do
       if entry.type == "file" and string.match(entry.name, "%.wiki$") then
         table.insert(wiki_list[sub_dir], "[[" .. archive_path .. "/" .. sub_dir .. "/" .. entry.name .. "]]")
       end
@@ -57,10 +51,10 @@ local function filterWikiPage(file_list_map, archive_path)
   return wiki_list
 end
 
-local function getSortedKeys(input) 
+local function getSortedKeys(input)
   local keys = {}
-  for key in pairs(input) do 
-    table.insert(keys, key) 
+  for key in pairs(input) do
+    table.insert(keys, key)
   end
   table.sort(keys)
   return keys
