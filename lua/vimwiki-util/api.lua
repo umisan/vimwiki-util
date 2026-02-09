@@ -1,23 +1,23 @@
 local ERROR = vim.log.levels.ERROR
 local INFO = vim.log.levels.INFO
 
-local function getCurrentLine()
+local function get_current_line()
   return vim.fn.getline(".")
 end
 
-local function getCurrentLineNumber()
+local function get_current_line_number()
   return vim.fn.line(".")
 end
 
-local function modifyCurrentBuffer(from, to, content)
+local function modify_current_buffer(from, to, content)
     vim.api.nvim_buf_set_lines(0, from, to, true, content)
 end
 
-local function appendToCurrentBuffer(content)
+local function append_to_current_buffer(content)
     vim.api.nvim_buf_set_lines(0, -1, -1, false, content)
 end
 
-local function clearCurrentBuffer()
+local function clear_current_buffer()
     vim.api.nvim_buf_set_lines(0, 1, -1, true, {})
 end
 
@@ -29,32 +29,32 @@ local function file_exists(path)
   return vim.fn.filereadable(path) == 1
 end
 
-local function isDirectory(path)
+local function is_directory(path)
   return vim.fn.isdirectory(path) == 1
 end
 
-local function listDirectory(path)
+local function list_directory(path)
   return vim.fs.dir(path)
 end
 
-local function notifyError(msg)
+local function notify_error(msg)
   vim.notify(msg, ERROR, {})
 end
 
-local function notifyInfo(msg)
+local function notify_info(msg)
   vim.notify(msg, INFO, {})
 end
 
 return {
-  getCurrentLine = getCurrentLine, 
-  getCurrentLineNumber = getCurrentLineNumber,
-  modifyCurrentBuffer = modifyCurrentBuffer,
-  appendToCurrentBuffer = appendToCurrentBuffer,
-  clearCurrentBuffer = clearCurrentBuffer,
+  get_current_line = get_current_line,
+  get_current_line_number = get_current_line_number,
+  modify_current_buffer = modify_current_buffer,
+  append_to_current_buffer = append_to_current_buffer,
+  clear_current_buffer = clear_current_buffer,
   expand = expand,
   file_exists = file_exists,
-  isDirectory = isDirectory,
-  listDirectory = listDirectory,
-  notifyError = notifyError,
-  notifyInfo = notifyInfo,
+  is_directory = is_directory,
+  list_directory = list_directory,
+  notify_error = notify_error,
+  notify_info = notify_info,
 }
