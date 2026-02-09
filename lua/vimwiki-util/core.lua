@@ -1,6 +1,6 @@
 local LINK_PATTERN = "%[%[([^%]|]*)%]%]"
 
-local function getLinkName(line)
+local function get_link_name(line)
   local link_name = string.match(line, LINK_PATTERN)
   if not link_name then
     return nil, "no vimwiki link"
@@ -20,12 +20,12 @@ local function get_archive_path(vimwiki_path, archive_path, year, link_name)
   return vimwiki_path .. "/" .. archive_path .. "/" .. year .. "/" .. link_name .. ".wiki"
 end
 
---- wikiArchive try to archiving vimwiki link
+--- wiki_archive try to archiving vimwiki link
 --- @param file_path string path to vimiwiki
 --- @param archive_path string path to archiving vimwiki link
 --- @return string|nil archive path
 --- @return string|nil err
-local function wikiArchive(file_path, archive_path)
+local function wiki_archive(file_path, archive_path)
   local success = os.rename(file_path, archive_path)
   if success then
     return "archived: " .. archive_path, nil
@@ -34,11 +34,11 @@ local function wikiArchive(file_path, archive_path)
   end
 end
 
---- filterWikiPage list vimwiki file
+--- filter_wiki_page list vimwiki file
 --- @param file_list_map table<string, table<string, string>[]>
 --- @param archive_path string root path of archive
 --- @return table<string, string[]> vimwiki file table
-local function filterWikiPage(file_list_map, archive_path)
+local function filter_wiki_page(file_list_map, archive_path)
   local wiki_list = {}
   for sub_dir, file_list in pairs(file_list_map) do
     wiki_list[sub_dir] = wiki_list[sub_dir] or {}
@@ -51,7 +51,7 @@ local function filterWikiPage(file_list_map, archive_path)
   return wiki_list
 end
 
-local function getSortedKeys(input)
+local function get_sorted_keys(input)
   local keys = {}
   for key in pairs(input) do
     table.insert(keys, key)
@@ -61,11 +61,11 @@ local function getSortedKeys(input)
 end
 
 return {
-  getLinkName = getLinkName,
+  get_link_name = get_link_name,
   get_link_file_path = get_link_file_path,
   get_archive_root = get_archive_root,
   get_archive_path = get_archive_path,
-  wikiArchive = wikiArchive,
-  filterWikiPage = filterWikiPage,
-  getSortedKeys = getSortedKeys,
+  wiki_archive = wiki_archive,
+  filter_wiki_page = filter_wiki_page,
+  get_sorted_keys = get_sorted_keys,
 }
